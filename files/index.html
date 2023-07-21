@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Mathematical server response</title>
+    </head>
+    <body>
+        <div>
+            <form>
+                <h1>Enter a number in each box, then press the submit button.</h1>
+
+                <input type="text" name="a" />
+                <input type="text" name="b" />
+
+                <button>Submit</button>
+            </form>
+        </div>
+        <script>
+            const numbers = document.querySelectorAll('input');
+            const button = document.querySelector('button');
+            const form = document.querySelector('form');
+
+            button.addEventListener('click', async event => {
+                event.preventDefault();
+
+                const request = await fetch('http://127.0.0.1:5500/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify({ a: Number.parseInt(numbers[0].value), b: Number.parseInt(numbers[1].value) }),
+                });
+
+                writeResponse(await request.json());
+            });
+
+            const writeResponse = ({ response }) => {
+                console.log(response);
+                form.innerHTML = '';
+
+                const html = `
+                    <h1>Result: ${response}<h1>
+                `;
+
+                form.insertAdjacentHTML('afterbegin', html);
+            };
+        </script>
+    </body>
+</html>
